@@ -18,12 +18,14 @@ export class ReservationsService {
   ) {}
 
   async cancel(id: number): Promise<ReservationEntity> {
-    // TODO 2: Coordinate the operation according to the examination.
-    const reservation = await this.findOne(id);
-    
-    
-    throw new NotImplementedException('TODO 2: implement cancellation');
-  }
+  const reservation = await this.findOne(id);
+
+  this.reservationRulesService.ensureCanCancel(reservation);
+
+  reservation.status = 'cancelled';
+
+  return this.reservationsRepository.save(reservation);
+}
 
   // The methods below are completed. Do not change them.
   async create(dto: CreateReservationDto): Promise<ReservationEntity> {
